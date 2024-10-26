@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Hermidoc</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1>Add Files</h1>
+            <button>Browse</button>
+            <div class="status">
+                <p>loading...</p>
+                <p>Ready to use.</p>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Chat with Hemidoc</h2>
+                <button>Clear</button>
+            </div>
+            <div class="chat-box">
+                <!-- Chat messages would go here -->
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Type your message...">
+                <button>&#x27A4;</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
