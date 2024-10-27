@@ -152,10 +152,9 @@ const Home = () => {
 
       {/* Right Panel */}
       <div className="right-panel">
-        <h2>Chat with Docs using Llama-3</h2>
-        <button onClick={ handleClearFiles } className="clear-button">
-          Clear
-        </button>
+        <h2 className="heads">Analyze with Hermedoc<button onClick={ handleClearFiles } className="clear-button">
+          Clear documents
+        </button></h2>
         <div className="chat-box">
           <form onSubmit={handleSubmit}>
             <input
