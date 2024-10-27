@@ -9,7 +9,7 @@ from llama_index.llms.ollama import Ollama
 import dill as pickle
 
 
-def getresponse():
+def getresponse(input):
         # Load the index
     with open('index.pkl', 'rb') as f:
         index = pickle.load(f)
@@ -21,7 +21,8 @@ def getresponse():
     query_engine = index.as_query_engine(streaming=True, similarity_top_k=4)
 
         # === Prompt Template
-    query_str = input("Enter your queary: ") #Taken from user input
+    # query_str = input("Enter your queary: ") #Taken from user input
+    query_str = input
 
     context_results = query_engine.retrieve(query_str)
     context_str = "\n".join([result.node.text for result in context_results])
@@ -41,4 +42,6 @@ def getresponse():
     query_engine.update_prompts({"response_synthesizer:text_qa_template": prompt})
     response = llm.complete(prompt + "and here is the context: " + context_str)
     print(response)
+    return response
+
 

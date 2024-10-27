@@ -7,6 +7,7 @@ const Home = () => {
   const [isIndexing, setIsIndexing] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
+  const [responseMessage, setResponseMessage] = useState(""); // State to hold the response
   const [pdfPreview, setPdfPreview] = useState(null);
   const [uploadMessage, setUploadMessage] = useState("");
   const [clearMessage, setClearMessage] = useState("");
@@ -73,6 +74,7 @@ const Home = () => {
       setIsIndexing(false);
       setIsReady(false);
       setUploadMessage("");
+      setResponseMessage(""); // Clear the response message
       // Reset the file input's value to allow re-uploading the same file
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -92,9 +94,20 @@ const Home = () => {
     setChatMessage(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Add code to send chatMessage to backend
+    try {
+      setChatMessage("Awaiting response"); 
+      const response = await axios.post("http://127.0.0.1:5000/chat", {
+        message: chatMessage,
+      });     
+      setChatMessage(""); // Clear the input field if desired
+
+      setResponseMessage(response.data.reply); // Store the response message
+    } catch (error) {
+      console.error("Error:", error);
+      setResponseMessage("An error occurred while sending your message.");
+    }
     console.log("Sending message:", chatMessage);
   };
 
@@ -156,21 +169,20 @@ const Home = () => {
           </div>
         )}
       </div>
+      
 
       {/* Right Panel */}
       <div className="right-panel">
-<<<<<<< HEAD
-        <h2 className="heads">Analyze with Hermedoc<button onClick={ handleClearFiles } className="clear-button">
-          Clear documents
-        </button></h2>
-=======
-        <h2>Chat with Hermedoc</h2>
-        <button onClick={handleClearFiles} className="clear-button">
-          Clear
-        </button>
->>>>>>> refs/remotes/origin/main
+        <h2 className="heads">Analyze with Hermedoc
+          <button onClick={handleClearFiles} className="clear-button">
+            Clear documents
+          </button>
+        </h2><img src="../public/icon-512x512.png" className="lockLogo"></img>
+        <div className="chat-history">
+          {responseMessage && <p>{responseMessage}</p>}
+        </div>
         <div className="chat-box">
-          <form onSubmit={handleSubmit}>
+          <form style={{ display: "flex", alignItems: "center" }}>
             <input
               type="text"
               placeholder="What's up?"
@@ -178,6 +190,21 @@ const Home = () => {
               onChange={handleChatInput}
               className="chat-input"
             />
+            <button
+              type="submit"
+              className="submit-button"
+              onClick={handleSubmit}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="40"
+                height="40"
+              >
+                <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+              </svg>
+            </button>
           </form>
         </div>
       </div>

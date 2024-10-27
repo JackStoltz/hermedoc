@@ -3,7 +3,8 @@ from flask_cors import CORS
 import os
 from werkzeug.utils import secure_filename
 import logging
-import vectordatabase
+from vectordatabase import vectordatabasemaker
+from interface import getresponse
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes (adjust origins as needed for security)
@@ -86,7 +87,8 @@ def upload_file():
         save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         try:
             file.save(save_path)
-            vectordatabase()
+            vectordatabasemaker()
+            #vectordatabasemaker() # Trigger vector database update after file change
             logger.info(f"File '{shorten_filename(filename)}' successfully uploaded.")
             return jsonify({'message': f'File {shorten_filename(filename)} successfully uploaded'}), 201
         except Exception as e:
@@ -127,15 +129,15 @@ def clear_files():
             if os.path.isfile(file_path):
                 try:
                     os.remove(file_path)
-                    vectordatabase()
                     deleted_files.append(f)
+                    vectordatabasemaker()
                     logger.info(f"Deleted file: {f}")
                 except Exception as e:
                     logger.error(f"Failed to delete file '{f}': {e}")
                     return jsonify({'error': f'Failed to delete file {f}: {str(e)}'}), 500
             else:
                 logger.warning(f"Skipped non-file entry: {f}")
-
+        #vectordatabasemaker() # Trigger vector database update after all file updates
         return jsonify({'message': f"Successfully deleted {len(deleted_files)} file(s).", 'deleted_files': deleted_files}), 200
 
     except Exception as e:
@@ -149,18 +151,24 @@ def chat():
     logging.info(f"Received chat message: {chat_message}")
     
     # Simulate a multi-paragraph response
-    response_text = (
-        "Certainly! I'm here to help you with your queries.\n\n"
-        "Feel free to ask me anything about file uploads, downloads, or chat functionalities. "
-        "I'll do my best to provide clear and concise answers to assist you.\n\n"
-        "If you have any specific requirements or need further assistance, just let me know!"
-    )
+    # response_text = (
+    #     "Certainly! I'm here to help you with your queries.\n\n"
+    #     "Feel free to ask me anything about file uploads, downloads, or chat functionalities. "
+    #     "I'll do my best to provide clear and concise answers to assist you.\n\n"
+    #     "If you have any specific requirements or need further assistance, just let me know!"
+    # )
+    response_text = getresponse(chat_message)
     
     # In a real-world scenario, integrate with an AI model like Llama-3 here
     
+    # Extract the main text content
+    reply_text = response_text.text if hasattr(response_text, 'text') else str(response_text)
+
     response = {
-        'reply': response_text
+        'reply': reply_text
     }
+
+    print("Works!")
     return jsonify(response), 200
 
 
