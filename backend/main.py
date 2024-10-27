@@ -139,5 +139,27 @@ def clear_files():
         logger.error(f"Error clearing files: {e}")
         return jsonify({'error': f'Error clearing files: {str(e)}'}), 500
 
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.get_json()
+    chat_message = data.get('message', '')
+    logging.info(f"Received chat message: {chat_message}")
+    
+    # Simulate a multi-paragraph response
+    response_text = (
+        "Certainly! I'm here to help you with your queries.\n\n"
+        "Feel free to ask me anything about file uploads, downloads, or chat functionalities. "
+        "I'll do my best to provide clear and concise answers to assist you.\n\n"
+        "If you have any specific requirements or need further assistance, just let me know!"
+    )
+    
+    # In a real-world scenario, integrate with an AI model like Llama-3 here
+    
+    response = {
+        'reply': response_text
+    }
+    return jsonify(response), 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)
