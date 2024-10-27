@@ -92,3 +92,10 @@
   background-color: #555;
   color: #fff;
 }
+
+.lockImage {
+  width: 30px;
+  height: 30px;
+  margin-left: 7px;
+  margin-bottom: 8px;
+}

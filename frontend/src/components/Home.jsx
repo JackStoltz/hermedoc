@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import lockImage from '../images/61457.png';
 
 const Home = () => {
   const [file, setFile] = useState(null);
@@ -8,26 +9,36 @@ const Home = () => {
   const [isReady, setIsReady] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [pdfPreview, setPdfPreview] = useState(null);
-  const [clear, setClear] = useState(false);
+
+  // Create a ref for the file input
+  const fileInputRef = useRef(null);
 
   const handleFileUpload = (event) => {
     const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-    setIsIndexing(true);
+    if (selectedFile) { // Ensure a file is selected
+      setFile(selectedFile);
+      setIsIndexing(true);
 
-    // Simulate indexing process
-    setTimeout(() => {
-      setIsIndexing(false);
-      setIsReady(true);
-      setPdfPreview(URL.createObjectURL(selectedFile)); // For previewing PDF
-    }, 2000); // Adjust indexing time as needed
+      // Simulate indexing process
+      setTimeout(() => {
+        setIsIndexing(false);
+        setIsReady(true);
+        setPdfPreview(URL.createObjectURL(selectedFile)); // For previewing PDF
+      }, 2000); // Adjust indexing time as needed
+    }
   };
 
-const clearFile = () => {
-  const selectedFile = null;
-  setFile(null);
-  setPdfPreview(null);
-}
+  const clearFile = () => {
+    setFile(null);
+    setPdfPreview(null);
+    setIsIndexing(false);
+    setIsReady(false);
+
+    // Reset the file input's value to allow re-uploading the same file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleChatInput = (event) => {
     setChatMessage(event.target.value);
@@ -43,7 +54,7 @@ const clearFile = () => {
     <div className="home-container">
       {/* Left Panel */}
       <div className="left-panel">
-        <h2>Add your documents!</h2>
+        <h2>Securely add document</h2>
         <p>
           Choose your <span className="pdf-highlight">.pdf</span> file
         </p>
@@ -54,6 +65,7 @@ const clearFile = () => {
             className="file-input"
             id="file-upload"
             onChange={handleFileUpload}
+            ref={fileInputRef} // Attach the ref here
           />
           <label htmlFor="file-upload" className="file-label">
             Drag and drop file here
@@ -78,7 +90,7 @@ const clearFile = () => {
         {/* PDF Preview */}
         {pdfPreview && (
           <div className="pdf-preview">
-            <h4>PDF Preview</h4>
+            <h4>PDF Preview<img src={lockImage} alt="lockImage" className="lockImage"/></h4>
             <iframe
               src={pdfPreview}
               title="PDF Preview"
