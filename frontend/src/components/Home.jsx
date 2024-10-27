@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import lockImage from '../images/61457.png';
+import lockImage from "../images/61457.png";
 
 const Home = () => {
   const [file, setFile] = useState(null);
@@ -16,22 +16,27 @@ const Home = () => {
 
   const handleFileUpload = async (event) => {
     const selectedFile = event.target.files[0];
-    if (selectedFile) { // Ensure a file is selected
+    if (selectedFile) {
+      // Ensure a file is selected
       setFile(selectedFile);
       setIsIndexing(true);
       setUploadMessage("");
 
       // Prepare the form data
       const formData = new FormData();
-      formData.append('file', selectedFile);
+      formData.append("file", selectedFile);
 
       try {
         // Make the POST request to the Flask backend
-        const response = await axios.post('http://127.0.0.1:5000/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.post(
+          "http://127.0.0.1:5000/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
         setUploadMessage(response.data.message); // Display success message
         console.log(response.data.message);
@@ -45,10 +50,10 @@ const Home = () => {
       } catch (error) {
         if (error.response && error.response.data) {
           setUploadMessage(error.response.data.error); // Display error message from backend
-          console.error('Error uploading file:', error.response.data.error);
+          console.error("Error uploading file:", error.response.data.error);
         } else {
-          setUploadMessage('An error occurred while uploading the file.');
-          console.error('Error uploading file:', error.message);
+          setUploadMessage("An error occurred while uploading the file.");
+          console.error("Error uploading file:", error.message);
         }
         setIsIndexing(false);
         setIsReady(false);
@@ -59,7 +64,7 @@ const Home = () => {
   const handleClearFiles = async () => {
     setClearMessage("");
     try {
-      const response = await axios.delete('http://127.0.0.1:5000/clear');
+      const response = await axios.delete("http://127.0.0.1:5000/clear");
       setClearMessage(response.data.message);
       console.log(response.data.message);
       // Optionally, reset other states
@@ -75,10 +80,10 @@ const Home = () => {
     } catch (error) {
       if (error.response && error.response.data) {
         setClearMessage(error.response.data.error);
-        console.error('Error clearing files:', error.response.data.error);
+        console.error("Error clearing files:", error.response.data.error);
       } else {
-        setClearMessage('An error occurred while clearing the files.');
-        console.error('Error clearing files:', error.message);
+        setClearMessage("An error occurred while clearing the files.");
+        console.error("Error clearing files:", error.message);
       }
     }
   };
@@ -121,7 +126,6 @@ const Home = () => {
 
         {file && (
           <div className="file-info">
-            
             {isIndexing ? (
               <p>Indexing your document...</p>
             ) : isReady ? (
@@ -140,7 +144,10 @@ const Home = () => {
         {/* PDF Preview */}
         {pdfPreview && (
           <div className="pdf-preview">
-            <h4>PDF Preview<img src={lockImage} alt="lockImage" className="lockImage"/></h4>
+            <h4>
+              PDF Preview
+              <img src={lockImage} alt="lockImage" className="lockImage" />
+            </h4>
             <iframe
               src={pdfPreview}
               title="PDF Preview"
@@ -152,8 +159,8 @@ const Home = () => {
 
       {/* Right Panel */}
       <div className="right-panel">
-        <h2>Chat with Docs using Llama-3</h2>
-        <button onClick={ handleClearFiles } className="clear-button">
+        <h2>Chat with Hermedoc</h2>
+        <button onClick={handleClearFiles} className="clear-button">
           Clear
         </button>
         <div className="chat-box">
