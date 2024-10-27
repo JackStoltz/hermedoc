@@ -1,4 +1,4 @@
-#!/Users/jasonchen/repos/repos2024/hermadoc/backend/venv/bin/python3.12
+#!/Users/jackstoltz/Documents/GitHub/hermadoc/backend/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys

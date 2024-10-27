@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/jasonchen/repos/repos2024/hermadoc/backend/venv"
+set -gx VIRTUAL_ENV "/Users/jackstoltz/Documents/GitHub/hermadoc/backend/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

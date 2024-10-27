@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import lockImage from '../images/61457.png';
 
@@ -9,34 +8,78 @@ const Home = () => {
   const [isReady, setIsReady] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [pdfPreview, setPdfPreview] = useState(null);
+  const [uploadMessage, setUploadMessage] = useState("");
+  const [clearMessage, setClearMessage] = useState("");
 
   // Create a ref for the file input
   const fileInputRef = useRef(null);
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) { // Ensure a file is selected
       setFile(selectedFile);
       setIsIndexing(true);
+      setUploadMessage("");
 
-      // Simulate indexing process
-      setTimeout(() => {
+      // Prepare the form data
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        // Make the POST request to the Flask backend
+        const response = await axios.post('http://127.0.0.1:5000/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        setUploadMessage(response.data.message); // Display success message
+        console.log(response.data.message);
+
+        // Simulate indexing process
+        setTimeout(() => {
+          setIsIndexing(false);
+          setIsReady(true);
+          setPdfPreview(URL.createObjectURL(selectedFile)); // For previewing PDF
+        }, 2000); // Adjust indexing time as needed
+      } catch (error) {
+        if (error.response && error.response.data) {
+          setUploadMessage(error.response.data.error); // Display error message from backend
+          console.error('Error uploading file:', error.response.data.error);
+        } else {
+          setUploadMessage('An error occurred while uploading the file.');
+          console.error('Error uploading file:', error.message);
+        }
         setIsIndexing(false);
-        setIsReady(true);
-        setPdfPreview(URL.createObjectURL(selectedFile)); // For previewing PDF
-      }, 2000); // Adjust indexing time as needed
+        setIsReady(false);
+      }
     }
   };
 
-  const clearFile = () => {
-    setFile(null);
-    setPdfPreview(null);
-    setIsIndexing(false);
-    setIsReady(false);
-
-    // Reset the file input's value to allow re-uploading the same file
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const handleClearFiles = async () => {
+    setClearMessage("");
+    try {
+      const response = await axios.delete('http://127.0.0.1:5000/clear');
+      setClearMessage(response.data.message);
+      console.log(response.data.message);
+      // Optionally, reset other states
+      setFile(null);
+      setPdfPreview(null);
+      setIsIndexing(false);
+      setIsReady(false);
+      setUploadMessage("");
+      // Reset the file input's value to allow re-uploading the same file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setClearMessage(error.response.data.error);
+        console.error('Error clearing files:', error.response.data.error);
+      } else {
+        setClearMessage('An error occurred while clearing the files.');
+        console.error('Error clearing files:', error.message);
+      }
     }
   };
 
@@ -78,12 +121,19 @@ const Home = () => {
 
         {file && (
           <div className="file-info">
-            <p>{file.name}</p>
+            
             {isIndexing ? (
               <p>Indexing your document...</p>
             ) : isReady ? (
               <p className="ready-message">Ready to Chat!</p>
             ) : null}
+          </div>
+        )}
+
+        {/* Display upload messages */}
+        {uploadMessage && (
+          <div className="upload-message">
+            <p>{uploadMessage}</p>
           </div>
         )}
 
@@ -103,7 +153,7 @@ const Home = () => {
       {/* Right Panel */}
       <div className="right-panel">
         <h2>Chat with Docs using Llama-3</h2>
-        <button onClick={clearFile} className="clear-button">
+        <button onClick={ handleClearFiles } className="clear-button">
           Clear
         </button>
         <div className="chat-box">
