@@ -31,3 +31,5 @@ dist-ssr
 *.sql
 node_modules
 views
+
+venv/
