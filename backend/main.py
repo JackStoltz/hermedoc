@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 from werkzeug.utils import secure_filename
 import logging
+import vectordatabase
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes (adjust origins as needed for security)
@@ -85,6 +86,7 @@ def upload_file():
         save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         try:
             file.save(save_path)
+            vectordatabase()
             logger.info(f"File '{shorten_filename(filename)}' successfully uploaded.")
             return jsonify({'message': f'File {shorten_filename(filename)} successfully uploaded'}), 201
         except Exception as e:
@@ -125,6 +127,7 @@ def clear_files():
             if os.path.isfile(file_path):
                 try:
                     os.remove(file_path)
+                    vectordatabase()
                     deleted_files.append(f)
                     logger.info(f"Deleted file: {f}")
                 except Exception as e:
