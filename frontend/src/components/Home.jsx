@@ -8,6 +8,7 @@ const Home = () => {
   const [isReady, setIsReady] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [pdfPreview, setPdfPreview] = useState(null);
+  const [clear, setClear] = useState(false);
 
   const handleFileUpload = (event) => {
     const selectedFile = event.target.files[0];
@@ -21,6 +22,12 @@ const Home = () => {
       setPdfPreview(URL.createObjectURL(selectedFile)); // For previewing PDF
     }, 2000); // Adjust indexing time as needed
   };
+
+const clearFile = () => {
+  const selectedFile = null;
+  setFile(null);
+  setPdfPreview(null);
+}
 
   const handleChatInput = (event) => {
     setChatMessage(event.target.value);
@@ -84,7 +91,7 @@ const Home = () => {
       {/* Right Panel */}
       <div className="right-panel">
         <h2>Chat with Docs using Llama-3</h2>
-        <button onClick={() => setChatMessage("")} className="clear-button">
+        <button onClick={clearFile} className="clear-button">
           Clear
         </button>
         <div className="chat-box">
