@@ -1,4 +1,5 @@
-#Inspiration
+Inspiration
+
 Hermedoc was inspired by the power of general chatbots to streamline daily tasks, particularly for researchers and professionals in sensitive industries. Many of these users face restrictions with current LLMs that rely on cloud servers, making them unsuitable for handling sensitive data. The need for a secure, on-device solution became evident. Feedback from a financial advisor highlighted the tedious nature of compliance work, which involved referencing thousands of internal documents without the support of effective search tools. Similarly, a researcher for the Department of Defense expressed frustration over being prohibited from using unsecure, general purpose AI chatbots due to strict confidentiality protocols. These insights underscored the necessity for Hermedoc—a chat assistant that prioritizes user privacy while enabling efficient document processing.
 
 What it does
